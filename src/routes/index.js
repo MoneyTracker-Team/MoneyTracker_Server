@@ -1,5 +1,5 @@
-import authRouter from './auth.router.js';
-import userRouter from './user.router.js';
+import authRouter from './auth.route.js';
+import userRouter from './user.route.js';
 
 function route(app) {
   app.use('/users', userRouter);
