@@ -1,4 +1,6 @@
 import Spend from '../model/spend.model.js';
+import createError from 'http-errors';
+import { spendValidate } from '../helpers/validation.js';
 
 export default {
   getAllSpendOfUser: async (userId) => {
@@ -21,6 +23,18 @@ export default {
 
   createNewSpend: async (newSpend) => {
     try {
+      // validate data
+      const dataValidate = {
+        userId: newSpend.userId,
+        typeId: newSpend.typeId,
+        moneySpend: newSpend.moneySpend,
+        dateTime: newSpend.dateTime,
+      };
+      const { error } = spendValidate(dataValidate);
+      if (error) {
+        throw createError(error.details[0].message);
+      }
+      //  after pass validate
       const data = await Spend.create(newSpend);
       return Promise.resolve(data);
     } catch (err) {

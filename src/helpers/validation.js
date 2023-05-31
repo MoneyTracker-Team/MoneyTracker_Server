@@ -27,3 +27,14 @@ export const typeSpendValidate = (data) => {
   });
   return TypeSpendSchema.validate(data);
 };
+
+//* Validate spend
+export const spendValidate = (data) => {
+  const SpendSchema = Joi.object({
+    userId: Joi.string().required(),
+    typeId: Joi.string().required(),
+    moneySpend: Joi.number().required(),
+    dateTime: Joi.date().required(),
+  });
+  return SpendSchema.validate(data);
+};
