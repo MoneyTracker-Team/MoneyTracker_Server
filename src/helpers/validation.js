@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+//* Validate authentication
 export const registerValidate = (data) => {
   const RegisterSchema = Joi.object({
     email: Joi.string().email().lowercase().required(),
@@ -15,4 +16,14 @@ export const loginValidate = (data) => {
     password: Joi.string().min(5).max(20).required(),
   });
   return LoginSchema.validate(data);
+};
+
+//* Validate type spend
+export const typeSpendValidate = (data) => {
+  const TypeSpendSchema = Joi.object({
+    userId: Joi.string().required(),
+    name: Joi.string().required(),
+    isDaily: Joi.boolean().default(true),
+  });
+  return TypeSpendSchema.validate(data);
 };
