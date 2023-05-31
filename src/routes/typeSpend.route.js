@@ -2,7 +2,7 @@ import express from 'express';
 import typeSpendController from '../controllers/typeSpend.controller.js';
 const router = express.Router();
 
-//* [GET]   :userID  -> Get all type spend of user
+//* [GET]   /all-of-user/:userID  -> Get all type spend of user
 router.get('/all-of-user/:userId', typeSpendController.getAllTypeSpend);
 
 //* [POST] /type-spends/cteate  -> create a type spend
