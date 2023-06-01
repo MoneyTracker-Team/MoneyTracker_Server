@@ -3,7 +3,14 @@ import spendServices from '../services/spend.services.js';
 export default {
   getSpendInMonth: async (req, res, next) => {
     try {
-      //
+      const { month, year } = req.query;
+      const { userId } = req.params;
+      const data = await spendServices.getSpendInMonth(userId, month, year);
+      res.status(200).json({
+        status: 200,
+        message: `get data in ${month}/${year} success`,
+        data,
+      });
     } catch (err) {
       next(err);
     }
