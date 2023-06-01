@@ -3,6 +3,7 @@ import userRouter from './user.route.js';
 import typeSpendRouter from './typeSpend.route.js';
 import friendRouter from './friend.route.js';
 import spendRouter from './spend.route.js';
+import scheduleRouter from './schedule.route.js';
 
 function route(app) {
   app.use('/users', userRouter);
@@ -10,6 +11,7 @@ function route(app) {
   app.use('/type-spends', typeSpendRouter);
   app.use('/friends', friendRouter);
   app.use('/spends', spendRouter);
+  app.use('/schedules', scheduleRouter);
 }
 
 export default route;
