@@ -1,6 +1,25 @@
 import spendServices from '../services/spend.services.js';
 
 export default {
+  getSpendSchedule: async (req, res, next) => {
+    try {
+      const { month, year } = req.query;
+      const { userId } = req.params;
+      const data = await spendServices.getSpendSchedule(userId, month, year);
+      const message =
+        Object.keys(data).length === 0
+          ? `in ${month}/${year} not yet schedule!`
+          : `get spend schedule in ${month}/${year} success`;
+      res.status(200).json({
+        status: 200,
+        message,
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getSpendInMonth: async (req, res, next) => {
     try {
       const { month, year } = req.query;

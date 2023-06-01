@@ -1,9 +1,123 @@
 import Spend from '../model/spend.model.js';
+import SpendSchedule from '../model/spendSchedule.model.js';
 import createError from 'http-errors';
 import { spendValidate } from '../helpers/validation.js';
 import mongoose from 'mongoose';
 
+//? get all spend by month with schedule
+const expected = {
+  spends: [
+    {
+      date: 'dd/mm/yyyy',
+      spended: '25.000',
+    },
+    {
+      date: 'dd/mm/yyyy',
+      spended: '25.000',
+    },
+  ],
+  moneyLimit: '75.000', // = remain money / remain date
+  remainingMoney: '3.000.000',
+  remainingDate: 3,
+  fixedMoney: '2.000.000',
+  spended: '1.000.0000',
+};
+
 export default {
+  getSpendSchedule: async (userId, month, year) => {
+    try {
+      const matchCondition = {
+        userId: new mongoose.Types.ObjectId(userId),
+        dateTime: {
+          $gte: new Date(year, month - 1, 1),
+          $lt: new Date(year, month, 1),
+        },
+      };
+
+      //todo: Get and check having Schedule for month
+      const schedule = await SpendSchedule.findOne({ month: month, year: year });
+      if (!schedule) {
+        return Promise.resolve({});
+      }
+
+      //todo:  Calc rest date in month
+      const currentDate = new Date();
+      let remainingDate =
+        currentDate.getFullYear() > year
+          ? 0
+          : currentDate.getFullYear() < year
+          ? new Date(year, month, 0).getDate()
+          : currentDate.getMonth() + 1 > month
+          ? 0
+          : currentDate.getMonth() + 1 < month
+          ? new Date(year, month, 0).getDate()
+          : new Date(year, month, 0).getDate() - currentDate.getDate();
+
+      //todo: get totalspend and fixed spend in month
+      let getTotalSpendAndFixedSpend = () => {
+        return new Promise(async (resolve) => {
+          const data = await Spend.aggregate([
+            {
+              $lookup: {
+                from: 'typespends',
+                localField: 'typeId',
+                foreignField: '_id',
+                as: 'types',
+              },
+            },
+            {
+              $unwind: '$types',
+            },
+            {
+              $match: matchCondition,
+            },
+            {
+              $group: {
+                _id: null,
+                totalMoney: { $sum: '$moneySpend' },
+                fixedMoney: { $sum: { $cond: [{ $eq: ['$types.isDaily', true] }, '$moneySpend', 0] } },
+              },
+            },
+          ]);
+          return resolve({ totalSpended: data[0].totalMoney, fixedMoney: data[0].fixedMoney });
+        });
+      };
+
+      //todo: get list spend group by date
+      let getSpendsByDate = () => {
+        return new Promise(async (resolve) => {
+          const data = await Spend.aggregate([
+            {
+              $match: matchCondition,
+            },
+            {
+              $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$dateTime' } },
+                spended: { $sum: '$moneySpend' },
+              },
+            },
+          ]);
+          return resolve(data);
+        });
+      };
+
+      const data = await Promise.all([getSpendsByDate(), getTotalSpendAndFixedSpend()]);
+
+      const remainingMoney = schedule.scheduleMoney - data[1].totalSpended;
+      const moneyLimit = remainingMoney > 0 && remainingDate > 0 ? Math.ceil(remainingMoney / remainingDate) : 0;
+
+      return Promise.resolve({
+        moneyLimit,
+        remainingMoney,
+        remainingDate,
+        ...data[1],
+        spends: data[0],
+      });
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendInMonth: async (userId, month, year) => {
     try {
       const matchCondition = {

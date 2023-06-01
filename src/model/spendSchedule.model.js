@@ -5,8 +5,9 @@ const SpendSchedule = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
     month: { type: Number },
+    year: { type: Number },
     scheduleMoney: { type: Number },
-    remainMoney: { type: Number },
+    // remainMoney: { type: Number },
   },
   { timestamps: true },
 );
