@@ -32,13 +32,28 @@ export default {
   updateUser: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { name, dateOfBirth, avatar, gender, currentMoney, slogan } = req.body;
-      const newInfo = { name, dateOfBirth, avatar, gender, currentMoney, slogan };
+      const { name, dateOfBirth, avatar, gender, slogan } = req.body;
+      const newInfo = { name, dateOfBirth, avatar, gender, slogan };
       const data = await userServices.updateUserInfo(id, newInfo);
       res.status(200).json({
         status: 200,
         message: 'update user info success',
         data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  updatePassword: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+      const data = await userServices.updatePassOfUser(id, oldPassword, newPassword);
+      res.status(200).json({
+        status: 200,
+        messaage: 'update pass word for user success',
+        data: { updated: data.modifiedCount },
       });
     } catch (err) {
       next(err);

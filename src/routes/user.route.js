@@ -11,4 +11,7 @@ router.get('/:id', userController.getAnUser);
 //* [PUT] /update/:id   -> update user infor
 router.put('/update/:id', userController.updateUser);
 
+//* [PUT] /update-pass/:id  -> update password of user
+router.put('/update-pass/:id', userController.updatePassword);
+
 export default router;

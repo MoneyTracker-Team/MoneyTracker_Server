@@ -1,5 +1,14 @@
 import Joi from 'joi';
 
+//* Validate password
+export const changePasswordValidate = (data) => {
+  const ChangePasswordSchema = Joi.object({
+    oldPassword: Joi.string().min(5).max(20).required(),
+    newPassword: Joi.string().min(5).max(20).required(),
+  });
+  return ChangePasswordSchema.validate(data);
+};
+
 //* Validate authentication
 export const registerValidate = (data) => {
   const RegisterSchema = Joi.object({
