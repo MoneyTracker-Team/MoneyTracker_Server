@@ -38,3 +38,14 @@ export const spendValidate = (data) => {
   });
   return SpendSchema.validate(data);
 };
+
+//* Validate schedule
+export const scheduleValidate = (data) => {
+  const ScheduleSchema = Joi.object({
+    userId: Joi.string().required(),
+    month: Joi.number().required(),
+    year: Joi.number().required(),
+    scheduleMoney: Joi.number().required(),
+  });
+  return ScheduleSchema.validate(data);
+};
