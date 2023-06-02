@@ -58,3 +58,11 @@ export const scheduleValidate = (data) => {
   });
   return ScheduleSchema.validate(data);
 };
+
+//* Validade History Ajust
+export const displaceValidate = (data) => {
+  const DisplaceSchema = Joi.object({
+    displace: Joi.number().required(),
+  });
+  return DisplaceSchema.validate(data);
+};

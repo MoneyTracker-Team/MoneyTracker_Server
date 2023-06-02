@@ -1,5 +1,6 @@
 import User from '../model/user.model.js';
-import { changePasswordValidate } from '../helpers/validation.js';
+import HistoryAjustMoney from '../model/historyAjustMoney.model.js';
+import { changePasswordValidate, displaceValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
 
 export default {
@@ -44,6 +45,27 @@ export default {
       //   after pass validate
       const data = await User.updateOne({ _id: id }, { password: newPassword });
       return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  updateCurrMoney: async (id, displace) => {
+    try {
+      const userData = await User.findOne({ _id: id });
+      // validate displace
+      const { error } = displaceValidate({ displace });
+      if (error) {
+        throw createError(error.details[0].message);
+      }
+      // after pass validate
+      const newMoney = userData.currentMoney + Number(displace);
+      let historyAdjustMoney = {};
+      const data = await User.updateOne({ _id: id }, { currentMoney: newMoney }).then(async (data) => {
+        historyAdjustMoney = await HistoryAjustMoney.create({ userId: id, ajustMoney: displace });
+        return Promise.resolve(data);
+      });
+      return Promise.resolve({ userUpdated: data.modifiedCount, historyAdjustMoney });
     } catch (err) {
       throw err;
     }
