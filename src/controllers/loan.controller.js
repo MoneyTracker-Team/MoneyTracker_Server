@@ -17,7 +17,13 @@ export default {
 
   getLoanGroupByDebtor: async (req, res, next) => {
     try {
-      //!!!
+      const { userId } = req.params;
+      const data = await loanServices.getLoanGroupByDebtor(userId);
+      res.status(200).json({
+        status: 200,
+        message: 'get loan group by debtor success',
+        data,
+      });
     } catch (err) {
       next(err);
     }

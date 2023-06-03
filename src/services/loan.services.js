@@ -23,6 +23,42 @@ export default {
     }
   },
 
+  /**
+   * Expected data:
+   * {
+   *  debtor: {
+   *    ...
+   *  },
+   *  totaLoan: 30000,
+   *  totalDebt: 40000,
+   * }
+   */
+  getLoanGroupByDebtor: async (userId) => {
+    try {
+      const data = await Loan.aggregate([
+        { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+        {
+          $group: {
+            _id: '$debtorId',
+            totalLoan: { $sum: { $cond: [{ $eq: ['$isDebt', false] }, '$moneySpend', 0] } },
+            totalDebt: { $sum: { $cond: [{ $eq: ['$isDebt', true] }, '$moneySpend', 0] } },
+          },
+        },
+        {
+          $lookup: {
+            from: 'friends',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'debtor',
+          },
+        },
+      ]);
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getLoanById: async (id) => {
     try {
       const data = await Loan.findOne({ _id: id });
