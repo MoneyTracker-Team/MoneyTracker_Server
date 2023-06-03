@@ -5,6 +5,7 @@ const Loan = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
     debtorId: { type: Schema.Types.ObjectId, ref: 'Friend' },
+    moneySpend: { type: Number },
     dateTime: { type: Date },
     location: { type: String },
     image: { type: String },

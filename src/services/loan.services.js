@@ -1,4 +1,6 @@
 import Loan from '../model/loan.model.js';
+import { createLoanValidate, updateLoanValidate } from '../helpers/validation.js';
+import createError from 'http-errors';
 
 export default {
   getLoanById: async (id) => {
@@ -12,7 +14,12 @@ export default {
 
   createNewLoan: async (newLoan) => {
     try {
-      //!!! add  validate for data
+      //  validate  data
+      const { error } = createLoanValidate(newLoan);
+      if (error) {
+        throw createError(error.details[0].message);
+      }
+      //   after pass validate
       const data = await Loan.create(newLoan);
       return Promise.resolve(data);
     } catch (err) {
@@ -22,6 +29,12 @@ export default {
 
   updateLoan: async (id, newLoan) => {
     try {
+      // validate data
+      const { error } = updateLoanValidate(newLoan);
+      if (error) {
+        throw createError(error.details[0].message);
+      }
+      //   after pass validate
       const data = await Loan.updateOne({ _id: id }, newLoan);
       return Promise.resolve(data.modifiedCount);
     } catch (err) {

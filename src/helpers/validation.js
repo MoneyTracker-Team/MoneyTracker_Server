@@ -66,3 +66,30 @@ export const displaceValidate = (data) => {
   });
   return DisplaceSchema.validate(data);
 };
+
+//* Validate Loan
+export const createLoanValidate = (data) => {
+  const LoanSchema = Joi.object({
+    userId: Joi.string().required(),
+    debtorId: Joi.string().required(),
+    moneySpend: Joi.number().required(),
+    dateTime: Joi.date().allow('').optional(),
+    location: Joi.string().allow('').optional(),
+    image: Joi.string().allow('').optional(),
+    note: Joi.string().allow('').optional(),
+    isDebt: Joi.boolean().required(),
+  });
+  return LoanSchema.validate(data);
+};
+
+export const updateLoanValidate = (data) => {
+  const LoanSchema = Joi.object({
+    debtorId: Joi.string(),
+    moneySpend: Joi.number(),
+    dateTime: Joi.date().allow('').optional(),
+    location: Joi.string().allow('').optional(),
+    image: Joi.string().allow('').optional(),
+    note: Joi.string().allow('').optional(),
+  });
+  return LoanSchema.validate(data);
+};
