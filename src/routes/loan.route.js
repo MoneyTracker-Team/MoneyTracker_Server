@@ -2,6 +2,9 @@ import express from 'express';
 import loanController from '../controllers/loan.controller.js';
 const router = express.Router();
 
+//* [GET] /loans/checkout-debtor/:userId?debtorId=""    -> Get all loans of a debtor
+router.get('/checkout-debtor/:userId', loanController.getListLoanOfDebtor);
+
 //* [GET] /loans/all-of-user/:userId -> Get all loan of user + infor debtor
 router.get('/all-of-user/:userId', loanController.getAllLoanOfUser);
 

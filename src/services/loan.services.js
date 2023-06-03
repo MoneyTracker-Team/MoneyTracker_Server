@@ -4,6 +4,35 @@ import createError from 'http-errors';
 import mongoose from 'mongoose';
 
 export default {
+  getListLoanOfDebtor: async (userId, debtorId) => {
+    try {
+      if (!userId || !debtorId) {
+        throw createError.BadRequest('Can not use this api without includes userId in params and debtorId in query');
+      }
+      // get loan and debt of debtor
+      const data = await Loan.find({ userId, debtorId });
+      // calc chekout money
+      let totalDebtMoney = 0;
+      let totalLoanMoney = 0;
+      if (Array.isArray(data)) {
+        data.map((item) => {
+          switch (item.isDebt) {
+            case true:
+              totalDebtMoney += Number(item.moneySpend);
+              break;
+            case false:
+              totalLoanMoney += Number(item.moneySpend);
+            default:
+              break;
+          }
+        });
+      }
+      return Promise.resolve({ checkoutMoney: totalLoanMoney - totalDebtMoney, loanAndDebts: data });
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getAllLoanOfUser: async (userId) => {
     try {
       const data = await Loan.aggregate([

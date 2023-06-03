@@ -1,6 +1,21 @@
 import loanServices from '../services/loan.services.js';
 
 export default {
+  getListLoanOfDebtor: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { debtorId } = req.query;
+      const data = await loanServices.getListLoanOfDebtor(userId, debtorId);
+      res.status(200).json({
+        status: 200,
+        message: 'get list loan and debt of debtor success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getAllLoanOfUser: async (req, res, next) => {
     try {
       const { userId } = req.params;
