@@ -1,5 +1,6 @@
 import Spend from '../model/spend.model.js';
 import SpendSchedule from '../model/spendSchedule.model.js';
+import User from '../model/user.model.js';
 import createError from 'http-errors';
 import { spendValidate } from '../helpers/validation.js';
 import mongoose from 'mongoose';
@@ -107,6 +108,7 @@ export default {
       const moneyLimit = remainingMoney > 0 && remainingDate > 0 ? Math.ceil(remainingMoney / remainingDate) : 0;
 
       return Promise.resolve({
+        scheduleMoney: schedule.scheduleMoney,
         moneyLimit,
         remainingMoney,
         remainingDate,
@@ -242,7 +244,17 @@ export default {
         throw createError(error.details[0].message);
       }
       //  after pass validate
-      const data = await Spend.create(newSpend);
+      const data = await Spend.create(newSpend)
+        .then(async (result) => {
+          try {
+            //* update money of user
+            await User.findOneAndUpdate({ _id: result.userId }, { $inc: { currentMoney: -result.moneySpend } });
+            return Promise.resolve(result);
+          } catch (err) {
+            throw err;
+          }
+        })
+        .catch((error) => createError(error.message));
       return Promise.resolve(data);
     } catch (err) {
       throw err;
