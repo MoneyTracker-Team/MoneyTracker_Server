@@ -263,7 +263,15 @@ export default {
 
   updateSpendById: async (id, newSpend) => {
     try {
+      const spendBeforeUpdate = await Spend.findOne({ _id: id });
       const data = await Spend.updateOne({ _id: id }, newSpend);
+      const spendAfterUpdate = await Spend.findOne({ _id: id });
+      //* update money for user
+      const { moneySpend } = newSpend;
+      if (moneySpend) {
+        const spaceMoney = spendAfterUpdate.moneySpend - spendBeforeUpdate.moneySpend;
+        await User.findOneAndUpdate({ _id: spendBeforeUpdate.userId }, { $inc: { currentMoney: spaceMoney } });
+      }
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
       throw err;
