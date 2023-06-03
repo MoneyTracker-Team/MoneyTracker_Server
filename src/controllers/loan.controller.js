@@ -3,7 +3,13 @@ import loanServices from '../services/loan.services.js';
 export default {
   getAllLoanOfUser: async (req, res, next) => {
     try {
-      //!!!
+      const { userId } = req.params;
+      const data = await loanServices.getAllLoanOfUser(userId);
+      res.status(200).json({
+        status: 200,
+        message: 'get all Loan of user success',
+        data,
+      });
     } catch (err) {
       next(err);
     }
