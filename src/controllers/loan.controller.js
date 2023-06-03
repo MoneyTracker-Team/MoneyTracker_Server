@@ -75,7 +75,14 @@ export default {
 
   checkoutLoanDebtor: async (req, res, next) => {
     try {
-      //!!!
+      const { userId } = req.params;
+      const { debtorId } = req.query;
+      const data = await loanServices.checkoutLoan(userId, debtorId);
+      res.status(200).json({
+        status: 200,
+        message: 'checkout for a debtor success',
+        data: { LoansDeleted: data },
+      });
     } catch (err) {
       next(err);
     }

@@ -7,7 +7,9 @@ export default {
   getListLoanOfDebtor: async (userId, debtorId) => {
     try {
       if (!userId || !debtorId) {
-        throw createError.BadRequest('Can not use this api without includes userId in params and debtorId in query');
+        throw createError.BadRequest(
+          'Can not use this api without includes "userId" in params and "debtorId" in query',
+        );
       }
       // get loan and debt of debtor
       const data = await Loan.find({ userId, debtorId });
@@ -122,6 +124,20 @@ export default {
       //   after pass validate
       const data = await Loan.updateOne({ _id: id }, newLoan);
       return Promise.resolve(data.modifiedCount);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  checkoutLoan: async (userId, debtorId) => {
+    try {
+      if (!userId || !debtorId) {
+        throw createError.BadRequest(
+          'Can not use this api without includes "userId" in params and "debtorId" in query',
+        );
+      }
+      const data = await Loan.deleteMany({ userId, debtorId });
+      return Promise.resolve(data.deletedCount);
     } catch (err) {
       throw err;
     }

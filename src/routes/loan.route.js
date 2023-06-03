@@ -17,11 +17,11 @@ router.get('/:id', loanController.getLoan);
 //* [POST] /loans/create-> create a loan
 router.post('/create', loanController.createLoan);
 
-//* [POST] /loans/checkout-loans-debtor    -> checkout loan with debtor
-router.post('/checkout-loans-debtor', loanController.checkoutLoanDebtor);
-
 //* [PUT] /loans/update/:id -> update a loan
 router.put('/update/:id', loanController.updateLoan);
+
+//* [DELETE] /loans/checkout/:userId?debtorId=""    -> checkout loan with debtor
+router.delete('/checkout/:userId', loanController.checkoutLoanDebtor);
 
 //* [DELETE] /loans/delete/:id -> delete a loan
 router.delete('/delete/:id', loanController.deleteLoan);
