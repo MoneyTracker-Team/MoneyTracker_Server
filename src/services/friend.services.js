@@ -1,6 +1,7 @@
 import Friend from '../model/friend.model.js';
 import Loan from '../model/loan.model.js';
 import Spend from '../model/spend.model.js';
+import { storeImg, removeImg } from '../helpers/cloudinary.js';
 
 export default {
   getAllFriendOfUser: async (userId) => {
@@ -14,6 +15,15 @@ export default {
 
   createNewFriend: async (newFriend) => {
     try {
+      const { image } = newFriend;
+      if (image) {
+        try {
+          const img = await storeImg(image);
+          newFriend.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
       const data = await Friend.create(newFriend);
       return Promise.resolve(data);
     } catch (err) {
@@ -23,6 +33,24 @@ export default {
 
   updateFriendById: async (id, newFriend) => {
     try {
+      const { image } = newFriend;
+      if (image) {
+        try {
+          //* remove image
+          (async () => {
+            const data = await Friend.findOne({ _id: id }, { image: 1 });
+            if (data) {
+              removeImg(data.image);
+            }
+          })();
+          //* store new image
+          const img = await storeImg(image);
+          newFriend.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+
       const data = await Friend.updateOne({ _id: id }, newFriend);
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
@@ -42,7 +70,7 @@ export default {
       //todo: delete all spend reference to this friend
       let deleteSpendRef = () => {
         return new Promise(async (resolve) => {
-          const data = await Spend.updateMany({}, { $pull: { userId: id } });
+          const data = await Spend.updateMany({}, { $pull: { friends: id } });
           return resolve(data);
         });
       };
@@ -54,6 +82,14 @@ export default {
           return resolve(data);
         });
       };
+
+      //todo: delete image in cloud
+      (async () => {
+        const data = await Friend.findOne({ _id: id }, { image: 1 });
+        if (data) {
+          removeImg(data.image);
+        }
+      })();
 
       const data = await Promise.all([deleteLoanRef(), deleteSpendRef(), deleteFriend()]);
       return Promise.resolve({
