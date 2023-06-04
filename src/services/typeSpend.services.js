@@ -20,6 +20,16 @@ export default {
       if (error) {
         throw createError(error.details[0].message);
       }
+      const { image } = newType;
+      if (image) {
+        try {
+          const img = await storeImg(image);
+          newType.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+      // create
       const data = await TypeSpend.create(newType);
       return Promise.resolve(data);
     } catch (err) {
@@ -29,6 +39,23 @@ export default {
 
   updateTypeSpend: async (id, newType) => {
     try {
+      const { image } = newType;
+      if (image) {
+        try {
+          //* remove image
+          (async () => {
+            const data = await TypeSpend.findOne({ _id: id }, { image: 1 });
+            if (data) {
+              removeImg(data.image);
+            }
+          })();
+          //* store new image
+          const img = await storeImg(image);
+          newType.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
       const data = await TypeSpend.updateOne({ _id: id }, newType);
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
@@ -52,6 +79,13 @@ export default {
           return resolve(data);
         });
       };
+      //todo: delete image in cloud
+      (async () => {
+        const data = await TypeSpend.findOne({ _id: id }, { image: 1 });
+        if (data) {
+          removeImg(data.image);
+        }
+      })();
 
       const data = await Promise.all([deleteSpendRef(), deleteTypeSpend()]);
       return Promise.resolve({ spendDeleted: data[0].deletedCount, typeSpendDeleted: data[1].deletedCount });
