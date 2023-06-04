@@ -60,8 +60,8 @@ export default {
 
   createLoan: async (req, res, next) => {
     try {
-      const { userId, debtorId, moneySpend, dateTime, location, image, note, isDebt } = req.body;
-      const newLoan = { userId, debtorId, moneySpend, dateTime, location, image, note, isDebt };
+      const { userId, debtorId, moneySpend, dateTime, location, image, tempFriends, note, isDebt } = req.body;
+      const newLoan = { userId, debtorId, moneySpend, dateTime, location, image, tempFriends, note, isDebt };
       const data = await loanServices.createNewLoan(newLoan);
       res.status(201).json({
         status: 201,
@@ -91,8 +91,8 @@ export default {
   updateLoan: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { debtorId, dateTime, moneySpend, location, image, note } = req.body;
-      const newLoan = { debtorId, dateTime, moneySpend, location, image, note };
+      const { debtorId, dateTime, moneySpend, location, image, tempFriends, note } = req.body;
+      const newLoan = { debtorId, dateTime, moneySpend, location, image, tempFriends, note };
       const data = await loanServices.updateLoan(id, newLoan);
       res.status(200).json({
         status: 200,
