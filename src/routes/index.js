@@ -6,7 +6,6 @@ import spendRouter from './spend.route.js';
 import scheduleRouter from './schedule.route.js';
 import adjustMoneyRouter from './adjustMoney.route.js';
 import loanRouter from './loan.route.js';
-import testRouter from './test.route.js';
 
 function route(app) {
   app.use('/users', userRouter);
@@ -17,7 +16,6 @@ function route(app) {
   app.use('/schedules', scheduleRouter);
   app.use('/adjust-moneys', adjustMoneyRouter);
   app.use('/loans', loanRouter);
-  app.use('/test', testRouter);
 }
 
 export default route;
