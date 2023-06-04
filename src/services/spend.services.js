@@ -1,6 +1,7 @@
 import Spend from '../model/spend.model.js';
 import SpendSchedule from '../model/spendSchedule.model.js';
 import User from '../model/user.model.js';
+import Friend from '../model/friend.model.js';
 import createError from 'http-errors';
 import { spendValidate } from '../helpers/validation.js';
 import mongoose from 'mongoose';
@@ -256,6 +257,21 @@ export default {
         }
       }
       // create
+      //* create many friends temporary
+      const { tempFriends } = newSpend;
+      let newFriendIds = [];
+      if (tempFriends) {
+        const listTempFriends = tempFriends.map((item) => {
+          return { name: item, isTemporaty: true };
+        });
+        const newFriends = await Friend.insertMany(listTempFriends);
+        newFriendIds = newFriends.map((item) => item._id);
+      }
+      // concat friend id between real fiend and temp friend
+      if (Array.isArray(newSpend.friends) && newSpend.friends.length > 0)
+        newSpend.friends = newSpend.friends.concat(newFriendIds);
+      else newSpend.friends = newFriendIds;
+
       const data = await Spend.create(newSpend)
         .then(async (result) => {
           try {
@@ -275,8 +291,8 @@ export default {
 
   updateSpendById: async (id, newSpend) => {
     try {
-      const { image } = newSpend;
-      //* update image store
+      const { image, friends, tempFriends } = newSpend;
+      //todo update image store
       if (image) {
         try {
           //* remove image
@@ -293,6 +309,32 @@ export default {
           throw err;
         }
       }
+      //todo update friends
+      let deleteFriendIds = [];
+      if (friends || tempFriends) {
+        let newFriendIds = [];
+        if (tempFriends) {
+          const listTempFriends = tempFriends.map((item) => {
+            return { name: item, isTemporaty: true };
+          });
+          const newFriends = await Friend.insertMany(listTempFriends);
+          newFriendIds = newFriends.map((item) => item._id);
+        }
+        let updateFriendIds = [];
+        const getFriendIds = await Spend.findOne({ _id: id }, { friends: 1 });
+        // get list friends before update
+        const friendBeforeUpdate = getFriendIds?.friends
+          ? getFriendIds.friends.map((objectId) => objectId.toString())
+          : [];
+        if (friends) {
+          deleteFriendIds = Array.isArray(friends) ? friendBeforeUpdate.filter((id) => !friends.includes(id)) : [];
+          updateFriendIds = friends.concat(newFriendIds);
+        } else {
+          updateFriendIds = friendBeforeUpdate.concat(newFriendIds);
+        }
+        newSpend.friends = updateFriendIds;
+      }
+
       // update
       const spendBeforeUpdate = await Spend.findOne({ _id: id });
       const data = await Spend.updateOne({ _id: id }, newSpend);
@@ -303,6 +345,10 @@ export default {
         const spaceMoney = spendAfterUpdate.moneySpend - spendBeforeUpdate.moneySpend;
         await User.findOneAndUpdate({ _id: spendBeforeUpdate.userId }, { $inc: { currentMoney: spaceMoney } });
       }
+      //* delete friend temporary:
+      await Friend.deleteMany({ _id: { $in: deleteFriendIds }, isTemporaty: true });
+      // .then((result) => console.log(result))
+      // .catch((err) => console.log(err));
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
       throw err;

@@ -65,8 +65,8 @@ export default {
 
   createSpend: async (req, res, next) => {
     try {
-      const { userId, typeId, moneySpend, dateTime, location, image, friends, note } = req.body;
-      const newSpend = { userId, typeId, moneySpend, dateTime, location, image, friends, note };
+      const { userId, typeId, moneySpend, dateTime, location, image, friends, tempFriends, note } = req.body;
+      const newSpend = { userId, typeId, moneySpend, dateTime, location, image, friends, tempFriends, note };
       const data = await spendServices.createNewSpend(newSpend);
       res.status(201).json({
         status: 201,
@@ -81,8 +81,8 @@ export default {
   updateSpend: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { typeId, moneySpend, dateTime, location, image, friends, note } = req.body;
-      const newSpend = { typeId, moneySpend, dateTime, location, image, friends, note };
+      const { typeId, moneySpend, dateTime, location, image, friends, tempFriends, note } = req.body;
+      const newSpend = { typeId, moneySpend, dateTime, location, image, friends, tempFriends, note };
       const data = await spendServices.updateSpendById(id, newSpend);
       res.status(200).json({
         status: 200,

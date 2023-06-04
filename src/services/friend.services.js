@@ -6,7 +6,7 @@ import { storeImg, removeImg } from '../helpers/cloudinary.js';
 export default {
   getAllFriendOfUser: async (userId) => {
     try {
-      const data = await Friend.find({ userId });
+      const data = await Friend.find({ userId, isTemporaty: false });
       return Promise.resolve(data);
     } catch (err) {
       throw err;
