@@ -225,7 +225,17 @@ export default {
 
   getSpendById: async (id) => {
     try {
-      const data = await Spend.findOne({ _id: id });
+      const data = await Spend.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        {
+          $lookup: {
+            from: 'friends',
+            localField: 'friends',
+            foreignField: '_id',
+            as: 'listFriends',
+          },
+        },
+      ]);
       return Promise.resolve(data);
     } catch (err) {
       throw err;

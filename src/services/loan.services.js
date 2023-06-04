@@ -94,7 +94,17 @@ export default {
 
   getLoanById: async (id) => {
     try {
-      const data = await Loan.findOne({ _id: id });
+      const data = await Loan.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        {
+          $lookup: {
+            from: 'friends',
+            localField: 'friends',
+            foreignField: '_id',
+            as: 'listFriends',
+          },
+        },
+      ]);
       return Promise.resolve(data);
     } catch (err) {
       throw err;
