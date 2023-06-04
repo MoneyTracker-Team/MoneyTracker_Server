@@ -4,6 +4,7 @@ import User from '../model/user.model.js';
 import createError from 'http-errors';
 import { spendValidate } from '../helpers/validation.js';
 import mongoose from 'mongoose';
+import { storeImg, removeImg } from '../helpers/cloudinary.js';
 
 //? get all spend by month with schedule
 const expected = {
@@ -244,6 +245,17 @@ export default {
         throw createError(error.details[0].message);
       }
       //  after pass validate
+      const { image } = newSpend;
+      //* store image to cloud
+      if (image) {
+        try {
+          const img = await storeImg(image);
+          newSpend.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+      // create
       const data = await Spend.create(newSpend)
         .then(async (result) => {
           try {
@@ -263,6 +275,25 @@ export default {
 
   updateSpendById: async (id, newSpend) => {
     try {
+      const { image } = newSpend;
+      //* update image store
+      if (image) {
+        try {
+          //* remove image
+          (async () => {
+            const data = await Spend.findOne({ _id: id }, { image: 1 });
+            if (data) {
+              removeImg(data.image);
+            }
+          })();
+          //* store new image
+          const img = await storeImg(image);
+          newSpend.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+      // update
       const spendBeforeUpdate = await Spend.findOne({ _id: id });
       const data = await Spend.updateOne({ _id: id }, newSpend);
       const spendAfterUpdate = await Spend.findOne({ _id: id });
@@ -280,6 +311,14 @@ export default {
 
   deleteSpendById: async (id) => {
     try {
+      //todo: delete image in cloud
+      (async () => {
+        const data = await Spend.findOne({ _id: id }, { image: 1 });
+        if (data) {
+          removeImg(data.image);
+        }
+      })();
+      // delete
       const data = await Spend.deleteOne({ _id: id });
       return Promise.resolve(data.deletedCount);
     } catch (err) {

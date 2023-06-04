@@ -2,6 +2,7 @@ import Loan from '../model/loan.model.js';
 import { createLoanValidate, updateLoanValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
 import mongoose from 'mongoose';
+import { storeImg, removeImg } from '../helpers/cloudinary.js';
 
 export default {
   getListLoanOfDebtor: async (userId, debtorId) => {
@@ -107,6 +108,17 @@ export default {
         throw createError(error.details[0].message);
       }
       //   after pass validate
+      const { image } = newLoan;
+      //* store image to cloud
+      if (image) {
+        try {
+          const img = await storeImg(image);
+          newLoan.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+      // create
       const data = await Loan.create(newLoan);
       return Promise.resolve(data);
     } catch (err) {
@@ -122,6 +134,25 @@ export default {
         throw createError(error.details[0].message);
       }
       //   after pass validate
+      const { image } = newLoan;
+      //* update image store
+      if (image) {
+        try {
+          //* remove image
+          (async () => {
+            const data = await Loan.findOne({ _id: id }, { image: 1 });
+            if (data) {
+              removeImg(data.image);
+            }
+          })();
+          //* store new image
+          const img = await storeImg(image);
+          newLoan.image = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
+      // update
       const data = await Loan.updateOne({ _id: id }, newLoan);
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
@@ -145,6 +176,14 @@ export default {
 
   deleteLoanById: async (id) => {
     try {
+      //todo: delete image in cloud
+      (async () => {
+        const data = await Loan.findOne({ _id: id }, { image: 1 });
+        if (data) {
+          removeImg(data.image);
+        }
+      })();
+      // delete
       const data = await Loan.deleteOne({ _id: id });
       return Promise.resolve(data.deletedCount);
     } catch (err) {
