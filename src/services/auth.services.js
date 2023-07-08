@@ -5,9 +5,19 @@ import createError from 'http-errors';
 export default {
   register: async (name, email, password) => {
     try {
-      const newUser = { name, email, password };
+      const defaultAvatar = 'https://res.cloudinary.com/dwskvqnkc/image/upload/v1685377490/avt_cfzkte.jpg';
+      const newUser = {
+        name,
+        email,
+        password,
+        dateOfBirth: null,
+        gender: true,
+        currentMoney: 0,
+        avatar: defaultAvatar,
+        slogan: 'Thêm slogan của bạn',
+      };
       //   validate data
-      const { error } = registerValidate(newUser);
+      const { error } = registerValidate({ email: newUser.email, password: newUser.password, name: newUser.name });
       if (error) {
         throw createError(error.details[0].message);
       }
