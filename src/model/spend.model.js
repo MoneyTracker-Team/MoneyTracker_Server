@@ -8,7 +8,11 @@ const Spend = new Schema(
     moneySpend: { type: Number },
     dateTime: { type: Date },
     location: { type: String },
-    image: { type: String },
+    image: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/dwskvqnkc/image/upload/v1688891395/money_tracker_image_store/default-image_bsoxjb.jpg',
+    },
     friends: [{ type: Schema.Types.ObjectId, ref: 'Friend' }],
     note: { type: String },
   },

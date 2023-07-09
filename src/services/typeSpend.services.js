@@ -2,6 +2,7 @@ import { typeSpendValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
 import TypeSpend from '../model/typeSpend.model.js';
 import Spend from '../model/spend.model.js';
+import { storeImg, removeImg } from '../helpers/cloudinary.js';
 
 export default {
   getAllTypeSpendByUser: async (userId) => {

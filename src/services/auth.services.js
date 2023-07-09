@@ -5,16 +5,10 @@ import createError from 'http-errors';
 export default {
   register: async (name, email, password) => {
     try {
-      const defaultAvatar = 'https://res.cloudinary.com/dwskvqnkc/image/upload/v1685377490/avt_cfzkte.jpg';
       const newUser = {
         name,
         email,
         password,
-        dateOfBirth: null,
-        gender: true,
-        currentMoney: 0,
-        avatar: defaultAvatar,
-        slogan: 'Thêm slogan của bạn',
       };
       //   validate data
       const { error } = registerValidate({ email: newUser.email, password: newUser.password, name: newUser.name });
