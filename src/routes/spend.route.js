@@ -2,7 +2,10 @@ import express from 'express';
 import spendController from '../controllers/spend.controller.js';
 const router = express.Router();
 
-//* [GET] /spends/in-month?month=""?year=""
+//* [GET] /spends/pie-chart?month=""?year=""
+router.get('/pie-chart/:userId', spendController.getSpendForPieChart);
+
+//* [GET] /spends/in-month?month=""?year=""   -> get spend for history screen
 router.get('/in-month/:userId', spendController.getSpendInMonth);
 
 //* [GET] /spends/schedule-in-month?month=""?year=?

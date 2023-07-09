@@ -1,6 +1,21 @@
 import spendServices from '../services/spend.services.js';
 
 export default {
+  getSpendForPieChart: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { month, year } = req.query;
+      const data = await spendServices.getSpendForPieChart(userId, month, year);
+      res.status(200).json({
+        status: 200,
+        message: 'get spend data for pie chart success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getSpendSchedule: async (req, res, next) => {
     try {
       const { month, year } = req.query;

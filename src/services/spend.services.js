@@ -27,6 +27,45 @@ const expected = {
 };
 
 export default {
+  getSpendForPieChart: async (userId, month, year) => {
+    try {
+      if (!month || !year) {
+        throw createError.ExpectationFailed('Expected /month and /year in query of request');
+      }
+
+      const data = await Spend.aggregate([
+        {
+          $match: { userId: mongoose.Types.ObjectId },
+        },
+        {
+          $lookup: {
+            from: 'typespends',
+            localField: 'typeId',
+            foreignField: '_id',
+            as: 'types',
+          },
+        },
+        {
+          $project: {
+            moneySpend: 1,
+            dateTime: 1,
+            location: 1,
+            image: 1,
+            friends: 1,
+            note: 1,
+            'types.name': 1,
+            'types.image': 1,
+            'types.isDaily': 1,
+          },
+        },
+      ]);
+
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendSchedule: async (userId, month, year) => {
     try {
       const matchCondition = {
