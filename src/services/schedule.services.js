@@ -3,6 +3,22 @@ import { scheduleValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
 
 export default {
+  adjustMoneySchedule: async (scheduleId, moneyAdjust) => {
+    try {
+      const data = await SpendSchedule.findOneAndUpdate(
+        {
+          _id: scheduleId,
+        },
+        { $inc: { scheduleMoney: moneyAdjust } },
+        { new: true },
+      );
+
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getScheduleOfUser: async (userId) => {
     try {
       const data = await SpendSchedule.find({ userId });

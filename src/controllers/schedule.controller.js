@@ -1,6 +1,23 @@
 import scheduleService from '../services/schedule.services.js';
+import createError from 'http-errors';
 
 export default {
+  adjustMoneySchedule: async (req, res, next) => {
+    try {
+      const { moneyAdjust } = req.body;
+      const { scheduleId } = req.params;
+      if (!moneyAdjust) throw createError.ExpectationFailed('Expected moneyAdjust field in body of request');
+      const data = await scheduleService.adjustMoneySchedule(scheduleId, moneyAdjust);
+      res.status(200).json({
+        status: 200,
+        message: 'Adjust money in schedule success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getScheduleOfUser: async (req, res, next) => {
     try {
       const { userId } = req.params;
