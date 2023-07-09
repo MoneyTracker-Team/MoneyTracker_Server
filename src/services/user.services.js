@@ -2,6 +2,7 @@ import User from '../model/user.model.js';
 import HistoryAjustMoney from '../model/historyAjustMoney.model.js';
 import { changePasswordValidate, displaceValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
+import { storeImg, removeImg } from '../helpers/cloudinary.js';
 
 export default {
   getAllUser: async () => {
@@ -24,6 +25,23 @@ export default {
 
   updateUserInfo: async (id, newInfo) => {
     try {
+      const { avatar } = newInfo;
+      if (avatar) {
+        try {
+          //* remove avatar in cloud
+          (async () => {
+            const data = await User.findOne({ _id: id }, { avatar: 1 });
+            if (data) {
+              removeImg(data.avatar);
+            }
+          })();
+          //* store new avatar
+          const img = await storeImg(avatar);
+          newInfo.avatar = img.url;
+        } catch (err) {
+          throw err;
+        }
+      }
       const data = await User.updateOne({ _id: id }, newInfo);
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
