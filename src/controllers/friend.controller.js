@@ -17,8 +17,9 @@ export default {
 
   createNewFriend: async (req, res, next) => {
     try {
-      const { userId, name, image, isTemporaty } = req.body;
-      const newFriend = { userId, name, image, isTemporaty };
+      const { userId } = req.params;
+      const { name, image, friendId, isTemporaty } = req.body;
+      const newFriend = { userId, name, image, friendId, isTemporaty };
       const data = await friendServices.createNewFriend(newFriend);
       res.status(201).json({
         status: 201,

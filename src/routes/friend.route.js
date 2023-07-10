@@ -5,8 +5,8 @@ const router = express.Router();
 //* [GET] /friends/all-of-user  -> Get all friend of user
 router.get('/all-of-user/:userId', friendController.getAllFriendOfUser);
 
-//* [POST] /friends/create  -> create new friend
-router.post('/create', friendController.createNewFriend);
+//* [POST] /friends/create/:userId  -> create new friend
+router.post('/create/:userId', friendController.createNewFriend);
 
 //* [PUT] /friends/update/:id   -> update a friend
 router.put('/update/:id', friendController.updateFriend);
