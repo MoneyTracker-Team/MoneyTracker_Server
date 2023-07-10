@@ -93,14 +93,16 @@ export default {
 
       //todo: delete image in cloud
       (async () => {
-        const data = await Friend.findOne({ _id: id }, { image: 1 });
-        if (data?.image) {
-          const fileName = getFileNameFromURL(data.image);
-          if (fileName !== 'avt_defaut_jvtz7u') {
-            try {
-              removeImg(data.image);
-            } catch (err) {
-              return;
+        const data = await Friend.findOne({ _id: id }, { image: 1 }, { friendId: 1 });
+        if (!data?.friendId) {
+          if (data?.image) {
+            const fileName = getFileNameFromURL(data.image);
+            if (fileName !== 'avt_defaut_jvtz7u') {
+              try {
+                removeImg(data.image);
+              } catch (err) {
+                return;
+              }
             }
           }
         }

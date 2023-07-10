@@ -11,6 +11,7 @@ const Friend = new Schema(
         'https://res.cloudinary.com/dwskvqnkc/image/upload/v1688892064/money_tracker_image_store/avt_defaut_jvtz7u.jpg',
     },
     isTemporaty: { type: Boolean },
+    friendId: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true },
 );
