@@ -121,7 +121,10 @@ export default {
               },
             },
           ]);
-          return resolve({ totalSpended: data[0].totalMoney, fixedMoney: data[0].fixedMoney });
+          return resolve({
+            totalSpended: data[0]?.totalMoney ? data[0].totalMoney : 0,
+            fixedMoney: data[0]?.fixedMoney ? data[0].fixedMoney : 0,
+          });
         });
       };
 
