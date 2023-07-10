@@ -49,8 +49,22 @@ export default {
             as: 'debtor',
           },
         },
+        {
+          $project: {
+            moneySpend: 1,
+            dateTime: 1,
+            location: 1,
+            image: 1,
+            note: 1,
+            'debtor.name': 1,
+            'debtor.image': 1,
+          },
+        },
       ]);
-      return Promise.resolve(data);
+      // flat data:
+      data[0].debtor = data[0]?.debtor[0];
+
+      return Promise.resolve(...data);
     } catch (err) {
       throw err;
     }
