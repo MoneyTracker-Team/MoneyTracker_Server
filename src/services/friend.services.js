@@ -2,6 +2,7 @@ import Friend from '../model/friend.model.js';
 import Loan from '../model/loan.model.js';
 import Spend from '../model/spend.model.js';
 import { storeImg, removeImg } from '../helpers/cloudinary.js';
+import getFileNameFromURL from '../helpers/getFileName.js';
 
 export default {
   getAllFriendOfUser: async (userId) => {
@@ -39,8 +40,15 @@ export default {
           //* remove image
           (async () => {
             const data = await Friend.findOne({ _id: id }, { image: 1 });
-            if (data) {
-              removeImg(data.image);
+            if (data?.image) {
+              const fileName = getFileNameFromURL(data.image);
+              if (fileName !== 'avt_defaut_jvtz7u') {
+                try {
+                  removeImg(data.image);
+                } catch (err) {
+                  return;
+                }
+              }
             }
           })();
           //* store new image
@@ -86,8 +94,15 @@ export default {
       //todo: delete image in cloud
       (async () => {
         const data = await Friend.findOne({ _id: id }, { image: 1 });
-        if (data) {
-          removeImg(data.image);
+        if (data?.image) {
+          const fileName = getFileNameFromURL(data.image);
+          if (fileName !== 'avt_defaut_jvtz7u') {
+            try {
+              removeImg(data.image);
+            } catch (err) {
+              return;
+            }
+          }
         }
       })();
 

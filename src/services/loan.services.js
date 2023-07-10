@@ -166,8 +166,12 @@ export default {
           //* remove image
           (async () => {
             const data = await Loan.findOne({ _id: id }, { image: 1 });
-            if (data) {
-              removeImg(data.image);
+            if (data?.image) {
+              try {
+                removeImg(data.image);
+              } catch (err) {
+                return;
+              }
             }
           })();
           //* store new image
@@ -232,8 +236,12 @@ export default {
       //todo: delete image in cloud
       (async () => {
         const data = await Loan.findOne({ _id: id }, { image: 1 });
-        if (data) {
-          removeImg(data.image);
+        if (data?.image) {
+          try {
+            removeImg(data.image);
+          } catch (err) {
+            return;
+          }
         }
       })();
       // delete

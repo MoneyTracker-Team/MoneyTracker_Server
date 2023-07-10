@@ -3,6 +3,7 @@ import HistoryAjustMoney from '../model/historyAjustMoney.model.js';
 import { changePasswordValidate, displaceValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
 import { storeImg, removeImg } from '../helpers/cloudinary.js';
+import getFileNameFromURL from '../helpers/getFileName.js';
 
 export default {
   getAllUser: async () => {
@@ -31,8 +32,15 @@ export default {
           //* remove avatar in cloud
           (async () => {
             const data = await User.findOne({ _id: id }, { avatar: 1 });
-            if (data) {
-              removeImg(data.avatar);
+            if (data?.avatar) {
+              const fileName = getFileNameFromURL(data.avatar);
+              if (fileName !== 'avt_defaut_jvtz7u') {
+                try {
+                  removeImg(data.avatar);
+                } catch (err) {
+                  return;
+                }
+              }
             }
           })();
           //* store new avatar
