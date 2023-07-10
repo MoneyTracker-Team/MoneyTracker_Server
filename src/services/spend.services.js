@@ -35,6 +35,15 @@ export default {
 
       const data = await Spend.aggregate([
         {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+            dateTime: {
+              $gte: new Date(year, month - 1, 1),
+              $lt: new Date(year, month, 1),
+            },
+          },
+        },
+        {
           $group: {
             _id: '$typeId',
             totalMoney: { $sum: '$moneySpend' },
