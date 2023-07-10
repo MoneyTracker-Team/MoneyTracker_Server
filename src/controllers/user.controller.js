@@ -2,6 +2,20 @@ import User from '../model/user.model.js';
 import userServices from '../services/user.services.js';
 
 export default {
+  getAccountNotFriend: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const data = await userServices.getAccountNotFriend(userId);
+      res.status(200).json({
+        status: 200,
+        message: 'Get all account to add friend success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getAll: async (req, res, next) => {
     try {
       const data = await userServices.getAllUser();

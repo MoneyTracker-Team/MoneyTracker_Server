@@ -2,6 +2,9 @@ import express from 'express';
 const router = express.Router();
 import userController from '../controllers/user.controller.js';
 
+//* [GET] /user-not-friend/:userId   -> get all account not a friend
+router.get('/user-not-friend/:userId', userController.getAccountNotFriend);
+
 //* [GET] /all-user -> get all user
 router.get('/all-user', userController.getAll);
 

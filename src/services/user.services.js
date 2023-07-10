@@ -1,4 +1,5 @@
 import User from '../model/user.model.js';
+import Friend from '../model/friend.model.js';
 import HistoryAjustMoney from '../model/historyAjustMoney.model.js';
 import { changePasswordValidate, displaceValidate } from '../helpers/validation.js';
 import createError from 'http-errors';
@@ -6,6 +7,16 @@ import { storeImg, removeImg } from '../helpers/cloudinary.js';
 import getFileNameFromURL from '../helpers/getFileName.js';
 
 export default {
+  getAccountNotFriend: async (userId) => {
+    //* get all userId is friend
+    const friendData = await Friend.find({ userId, friendId: { $exists: true, $ne: null } }).select('friendId');
+    const ids = friendData.map((item) => item.friendId);
+    ids.push(userId);
+    // get account not a friend
+    const data = await User.find({ _id: { $nin: ids } });
+    return Promise.resolve(data);
+  },
+
   getAllUser: async () => {
     try {
       const data = await User.find();
