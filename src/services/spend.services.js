@@ -35,27 +35,23 @@ export default {
 
       const data = await Spend.aggregate([
         {
-          $match: { userId: mongoose.Types.ObjectId },
+          $group: {
+            _id: '$typeId',
+            totalMoney: { $sum: '$moneySpend' },
+          },
         },
         {
           $lookup: {
             from: 'typespends',
-            localField: 'typeId',
-            foreignField: '_id',
-            as: 'types',
+            let: { typeId: '$_id' },
+            pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$typeId'] } } }, { $project: { _id: 0, name: 1 } }],
+            as: 'type',
           },
         },
         {
           $project: {
-            moneySpend: 1,
-            dateTime: 1,
-            location: 1,
-            image: 1,
-            friends: 1,
-            note: 1,
-            'types.name': 1,
-            'types.image': 1,
-            'types.isDaily': 1,
+            typeSpend: { $arrayElemAt: ['$type.name', 0] },
+            totalMoney: 1,
           },
         },
       ]);
