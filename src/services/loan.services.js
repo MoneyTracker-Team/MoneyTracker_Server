@@ -113,7 +113,7 @@ export default {
 
   createNewLoan: async (newLoan) => {
     try {
-      //  validate  data
+      //  validate data
       const { error } = createLoanValidate(newLoan);
       if (error) {
         throw createError(error.details[0].message);
@@ -129,21 +129,7 @@ export default {
           throw err;
         }
       }
-      //* create many friends temporary
-      const { tempFriends } = newLoan;
-      let newFriendIds = [];
-      if (tempFriends) {
-        const listTempFriends = tempFriends.map((item) => {
-          return { name: item, isTemporaty: true };
-        });
-        const newFriends = await Friend.insertMany(listTempFriends);
-        newFriendIds = newFriends.map((item) => item._id);
-      }
-      // concat friend id between real fiend and temp friend
-      if (Array.isArray(newLoan.friends) && newLoan.friends.length > 0)
-        newLoan.friends = newLoan.friends.concat(newFriendIds);
-      else newLoan.friends = newFriendIds;
-      // create
+
       const data = await Loan.create(newLoan);
       return Promise.resolve(data);
     } catch (err) {
@@ -158,8 +144,8 @@ export default {
       if (error) {
         throw createError(error.details[0].message);
       }
-      //   after pass validate
-      const { image, tempFriends, friends } = newLoan;
+      // after pass validate
+      const { image } = newLoan;
       //* update image store
       if (image) {
         try {
@@ -181,36 +167,8 @@ export default {
           throw err;
         }
       }
-      //todo: update friends
-      let deleteFriendIds = [];
-      if (friends || tempFriends) {
-        let newFriendIds = [];
-        if (tempFriends) {
-          const listTempFriends = tempFriends.map((item) => {
-            return { name: item, isTemporaty: true };
-          });
-          const newFriends = await Friend.insertMany(listTempFriends);
-          newFriendIds = newFriends.map((item) => item._id);
-        }
-        let updateFriendIds = [];
-        const getFriendIds = await Loan.findOne({ _id: id }, { friends: 1 });
-        // get list friends before update
-        const friendBeforeUpdate = getFriendIds?.friends
-          ? getFriendIds.friends.map((objectId) => objectId.toString())
-          : [];
-        if (friends) {
-          deleteFriendIds = Array.isArray(friends) ? friendBeforeUpdate.filter((id) => !friends.includes(id)) : [];
-          updateFriendIds = friends.concat(newFriendIds);
-        } else {
-          updateFriendIds = friendBeforeUpdate.concat(newFriendIds);
-        }
-        newLoan.friends = updateFriendIds;
-      }
-
       // update
       const data = await Loan.updateOne({ _id: id }, newLoan);
-      //* delete friend temporary:
-      await Friend.deleteMany({ _id: { $in: deleteFriendIds }, isTemporaty: true });
       return Promise.resolve(data.modifiedCount);
     } catch (err) {
       throw err;
