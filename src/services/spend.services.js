@@ -149,6 +149,7 @@ export default {
       const moneyLimit = remainingMoney > 0 && remainingDate > 0 ? Math.ceil(remainingMoney / remainingDate) : 0;
 
       return Promise.resolve({
+        scheduleId: schedule._id,
         scheduleMoney: schedule.scheduleMoney,
         moneyLimit,
         remainingMoney,
