@@ -220,7 +220,7 @@ export default {
               },
             },
           ]);
-          return resolve({ minTotalMoney: data[0].minTotalMoney, maxTotalMoney: data[0].maxTotalMoney });
+          return resolve({ minTotalMoney: data[0]?.minTotalMoney ?? 0, maxTotalMoney: data[0]?.maxTotalMoney ?? 0 });
         });
       };
 
@@ -250,7 +250,7 @@ export default {
               },
             },
           ]);
-          return resolve({ totalMoney: data[0].totalMoney, fixedMoney: data[0].fixedMoney });
+          return resolve({ totalMoney: data[0]?.totalMoney ?? 0, fixedMoney: data[0]?.fixedMoney ?? 0 });
         });
       };
 
