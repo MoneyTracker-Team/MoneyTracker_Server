@@ -18,11 +18,14 @@ export default {
     try {
       const { image } = newFriend;
       if (image) {
-        try {
-          const img = await storeImg(image);
-          newFriend.image = img.url;
-        } catch (err) {
-          throw err;
+        const checkURL = image.substring(0, 4);
+        if (checkURL !== 'http') {
+          try {
+            const img = await storeImg(image);
+            newFriend.image = img.url;
+          } catch (err) {
+            throw err;
+          }
         }
       }
       const data = await Friend.create(newFriend);
