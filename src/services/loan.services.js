@@ -56,6 +56,7 @@ export default {
             location: 1,
             image: 1,
             note: 1,
+            isDebt: 1,
             'debtor.name': 1,
             'debtor.image': 1,
           },
