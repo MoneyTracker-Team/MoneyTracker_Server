@@ -62,9 +62,13 @@ export default {
         },
       ]);
       // flat data:
-      data[0].debtor = data[0]?.debtor[0];
+      // data[0].debtor = data[0]?.debtor[0];
+      const returnData = data.map((item) => {
+        const { debtor, ...rest } = item;
+        return { ...rest, debtor: debtor[0] };
+      });
 
-      return Promise.resolve(...data);
+      return Promise.resolve(returnData);
     } catch (err) {
       throw err;
     }
