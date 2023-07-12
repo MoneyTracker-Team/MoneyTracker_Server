@@ -27,6 +27,125 @@ const expected = {
 };
 
 export default {
+  getStatisticSpend: async (userId, type) => {
+    try {
+      //* check type:
+      if (!type) {
+        throw createError.BadRequest('Expected /type in query of request');
+      }
+
+      let data = [];
+      const currentDate = new Date();
+
+      switch (type) {
+        case 'week':
+          const startOfWeek = new Date(); // Get the current date
+          startOfWeek.setHours(0, 0, 0, 0); // Set the time to the start of the day (midnight)
+          startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Calculate the start of the week (Sunday)
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(endOfWeek.getDate() + 6); // Calculate the end of the week (Saturday)
+
+          data = await Spend.aggregate([
+            {
+              $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                dateTime: {
+                  $gte: startOfWeek,
+                  $lte: endOfWeek,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$dateTime' } },
+                totalMoney: { $sum: '$moneySpend' },
+              },
+            },
+            {
+              $sort: {
+                _id: 1,
+              },
+            },
+          ]);
+          // convert format return array data
+          data = data.map((item) => item.totalMoney);
+          break;
+
+        case 'month':
+          const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+          const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+          data = await Spend.aggregate([
+            {
+              $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                dateTime: {
+                  $gte: startOfMonth,
+                  $lte: endOfMonth,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$dateTime' } },
+                totalMoney: { $sum: '$moneySpend' },
+              },
+            },
+            {
+              $sort: {
+                _id: 1,
+              },
+            },
+          ]);
+          // convert format return array data
+          data = data.map((item) => item.totalMoney);
+          break;
+
+        // default type = date
+        default:
+          const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+          const endOfDay = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate(),
+            23,
+            59,
+            59,
+            999,
+          );
+
+          data = await Spend.aggregate([
+            {
+              $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                dateTime: {
+                  $gte: startOfDay,
+                  $lte: endOfDay,
+                },
+              },
+            },
+            {
+              $sort: {
+                moneySpend: 1,
+              },
+            },
+            {
+              $project: {
+                moneySpend: 1,
+              },
+            },
+          ]);
+          // convert format return array data
+          data = data.map((item) => item.moneySpend);
+          break;
+      }
+
+      return Promise.resolve(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendInDate: async (userId, day, month, year) => {
     try {
       const inputDate = new Date(Number(year), Number(month) - 1, Number(day));

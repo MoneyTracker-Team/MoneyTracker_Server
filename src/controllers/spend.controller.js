@@ -1,6 +1,22 @@
+import { query } from 'express';
 import spendServices from '../services/spend.services.js';
 
 export default {
+  getStatisticSpend: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { type } = req.query;
+      const data = await spendServices.getStatisticSpend(userId, type);
+      res.status(200).json({
+        status: 200,
+        message: 'get data statistic spend success',
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getSpendInDate: async (req, res, next) => {
     try {
       const { userId } = req.params;
