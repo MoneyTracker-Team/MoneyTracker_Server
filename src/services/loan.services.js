@@ -118,9 +118,22 @@ export default {
         {
           $lookup: {
             from: 'friends',
-            localField: 'friends',
+            localField: 'debtorId',
             foreignField: '_id',
-            as: 'listFriends',
+            as: 'debtor',
+          },
+        },
+        {
+          $project: {
+            debtorId: 1,
+            moneySpend: 1,
+            dateTime: 1,
+            location: 1,
+            image: 1,
+            note: 1,
+            isDebt: 1,
+            'debtor.name': 1,
+            'debtor.image': 1,
           },
         },
       ]);
