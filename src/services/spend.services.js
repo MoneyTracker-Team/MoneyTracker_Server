@@ -179,8 +179,8 @@ export default {
                 moneySpend: 1,
                 dateTime: 1,
                 note: 1,
-                image: 1,
                 'types.name': 1,
+                'types.image': 1,
               },
             },
           ]);
@@ -210,8 +210,8 @@ export default {
         });
       const data = await Promise.all([calcTotalMoney(), getSpends()]);
       const spendDatas = data[1].map((spend) => {
-        const { types, ...rest } = spend;
-        return { ...rest, name: types[0].name };
+        const { types, image, ...rest } = spend;
+        return { ...rest, name: types[0].name, image: types[0].image };
       });
       const returnData =
         data[0].length === 0 ? {} : { date: data[0][0]._id, totalMoney: data[0][0].totalMoney, spends: spendDatas };
