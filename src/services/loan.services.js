@@ -14,7 +14,37 @@ export default {
         );
       }
       // get loan and debt of debtor
-      const data = await Loan.find({ userId, debtorId });
+      // const data = await Loan.find({ userId, debtorId });
+      const data = await Loan.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+            debtorId: new mongoose.Types.ObjectId(debtorId),
+          },
+        },
+        {
+          $lookup: {
+            from: 'friends',
+            localField: 'debtorId',
+            foreignField: '_id',
+            as: 'debtor',
+          },
+        },
+        {
+          $project: {
+            debtorId: 1,
+            moneySpend: 1,
+            dateTime: 1,
+            location: 1,
+            image: 1,
+            note: 1,
+            isDebt: 1,
+            'debtor.name': 1,
+            'debtor.image': 1,
+          },
+        },
+      ]);
+
       // calc chekout money
       let totalDebtMoney = 0;
       let totalLoanMoney = 0;
@@ -31,7 +61,13 @@ export default {
           }
         });
       }
-      return Promise.resolve({ checkoutMoney: totalLoanMoney - totalDebtMoney, loanAndDebts: data });
+      // flat data
+      const flatData = data.map((item) => {
+        const { debtor, ...rest } = item;
+        return { ...rest, debtor: debtor[0] };
+      });
+
+      return Promise.resolve({ checkoutMoney: totalLoanMoney - totalDebtMoney, loanAndDebts: flatData });
     } catch (err) {
       throw err;
     }
