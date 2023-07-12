@@ -41,7 +41,7 @@ export default {
         case 'week':
           const startOfWeek = new Date(); // Get the current date
           startOfWeek.setHours(0, 0, 0, 0); // Set the time to the start of the day (midnight)
-          startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Calculate the start of the week (Sunday)
+          startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // Calculate the start of the week (Sunday)
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(endOfWeek.getDate() + 6); // Calculate the end of the week (Saturday)
 
@@ -109,7 +109,7 @@ export default {
 
         // default type = date
         default:
-          const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+          const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
           const endOfDay = new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
