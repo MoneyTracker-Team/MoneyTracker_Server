@@ -27,6 +27,67 @@ const expected = {
 };
 
 export default {
+  getSpendInDate: async (userId, day, month, year) => {
+    try {
+      const inputDate = new Date(Number(year), Number(month) - 1, Number(day));
+      inputDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(inputDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+      console.log('inputDate: ', inputDate);
+      console.log('endDate: ', endDate);
+
+      //* get spends in date
+      const getSpends = () =>
+        new Promise(async (resolve) => {
+          const data = await Spend.aggregate([
+            {
+              $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                dateTime: {
+                  $gte: inputDate,
+                  $lte: endDate,
+                },
+              },
+            },
+            {
+              $project: {
+                moneySpend: 1,
+                dateTime: 1,
+                image: 1,
+              },
+            },
+          ]);
+          return resolve(data);
+        });
+
+      const calcTotalMoney = () =>
+        new Promise(async (resolve) => {
+          const data = await Spend.aggregate([
+            {
+              $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                dateTime: {
+                  $gte: inputDate,
+                  $lte: endDate,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$dateTime' } },
+                totalMoney: { $sum: '$moneySpend' },
+              },
+            },
+          ]);
+          return resolve(data);
+        });
+      const data = await Promise.all([calcTotalMoney(), getSpends()]);
+      return Promise.resolve({ date: data[0][0]._id, totalMoney: data[0][0].totalMoney, spends: data[1] });
+    } catch (err) {
+      throw err;
+    }
+  },
+
   getSpendForPieChart: async (userId, month, year) => {
     try {
       if (!month || !year) {
