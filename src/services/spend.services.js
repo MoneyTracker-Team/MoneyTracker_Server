@@ -45,6 +45,9 @@ export default {
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(endOfWeek.getDate() + 6); // Calculate the end of the week (Saturday)
 
+          console.log('startOfWeek: ', startOfWeek);
+          console.log('endOfWeek: ', endOfWeek);
+
           data = await Spend.aggregate([
             {
               $match: {
@@ -74,6 +77,9 @@ export default {
         case 'month':
           const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
           const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+          console.log('startOfMonth: ', startOfMonth);
+          console.log('endOfMonth: ', endOfMonth);
 
           data = await Spend.aggregate([
             {
@@ -113,6 +119,9 @@ export default {
             59,
             999,
           );
+
+          console.log('startOfDay: ', startOfDay);
+          console.log('endOfDay: ', endOfDay);
 
           data = await Spend.aggregate([
             {
