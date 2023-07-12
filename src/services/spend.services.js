@@ -58,6 +58,7 @@ export default {
               $project: {
                 moneySpend: 1,
                 dateTime: 1,
+                note: 1,
                 image: 1,
                 'types.name': 1,
               },
