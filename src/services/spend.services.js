@@ -44,6 +44,7 @@ export default {
           startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1); // Calculate the start of the week (Sunday)
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(endOfWeek.getDate() + 6); // Calculate the end of the week (Saturday)
+          endOfWeek.setHours(23, 59, 59, 999);
 
           console.log('startOfWeek: ', startOfWeek);
           console.log('endOfWeek: ', endOfWeek);
@@ -113,7 +114,7 @@ export default {
           const endOfDay = new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
-            currentDate.getDate(),
+            currentDate.getDate() + 1,
             23,
             59,
             59,
