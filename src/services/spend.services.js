@@ -120,6 +120,7 @@ export default {
             999,
           );
 
+          console.log('currentDate: ', currentDate);
           console.log('startOfDay: ', startOfDay);
           console.log('endOfDay: ', endOfDay);
 
