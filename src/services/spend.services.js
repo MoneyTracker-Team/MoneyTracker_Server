@@ -115,6 +115,9 @@ export default {
             999,
           );
 
+          console.log('startOfDay: ', startOfDay);
+          console.log('endOfDay: ', endOfDay);
+
           data = await Spend.aggregate([
             {
               $match: {
