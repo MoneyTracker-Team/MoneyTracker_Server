@@ -104,11 +104,11 @@ export default {
 
         // default type = date
         default:
-          const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
+          const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
           const endOfDay = new Date(
             currentDate.getFullYear(),
             currentDate.getMonth(),
-            currentDate.getDate() + 1,
+            currentDate.getDate(),
             23,
             59,
             59,
