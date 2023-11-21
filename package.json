@@ -19,6 +19,7 @@
     "mongoose": "^7.0.3"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.7"
   }
