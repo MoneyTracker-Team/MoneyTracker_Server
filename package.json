@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon --inspect server.js"
+    "start": "nodemon --inspect server.js",
+    "test": "jest"
   },
   "author": "Phuc Hoang Van",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "mongoose": "^7.0.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.3",
     "jest": "^29.7.0",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.7"
