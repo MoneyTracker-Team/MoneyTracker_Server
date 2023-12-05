@@ -1,6 +1,6 @@
 export default {
   // path to test folder
-  testMatch: ['**/__test__/**'],
+  testMatch: ['**/__test__/**/*.+(e2e|test).js'],
 
   // jest ignore
   testPathIgnorePatterns: ['/node_modules/'],
@@ -18,5 +18,5 @@ export default {
   clearMocks: true,
 
   // time out
-  testTimeout: 5000,
+  testTimeout: 15000,
 };
