@@ -35,12 +35,12 @@ export default {
       // validate data
       const { error } = loginValidate({ email, password });
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       //   check email exists
       const user = await User.findOne({ email });
       if (!user) {
-        throw createError.NotFound('This email is not exists!');
+        throw createError.Unauthorized('This email is not exists!');
       }
       //   compare password
       if (password !== user.password) {
