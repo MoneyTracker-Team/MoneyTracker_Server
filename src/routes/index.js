@@ -8,14 +8,14 @@ import adjustMoneyRouter from './adjustMoney.route.js';
 import loanRouter from './loan.route.js';
 
 function route(app) {
-  app.use('/users', userRouter);
-  app.use('/auth', authRouter);
-  app.use('/type-spends', typeSpendRouter);
-  app.use('/friends', friendRouter);
-  app.use('/spends', spendRouter);
-  app.use('/schedules', scheduleRouter);
-  app.use('/adjust-moneys', adjustMoneyRouter);
-  app.use('/loans', loanRouter);
+  app.use('/api/users', userRouter);
+  app.use('/api/auth', authRouter);
+  app.use('/api/type-spends', typeSpendRouter);
+  app.use('/api/friends', friendRouter);
+  app.use('/api/spends', spendRouter);
+  app.use('/api/schedules', scheduleRouter);
+  app.use('/api/adjust-moneys', adjustMoneyRouter);
+  app.use('/api/loans', loanRouter);
 }
 
 export default route;
