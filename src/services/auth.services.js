@@ -13,7 +13,7 @@ export default {
       //   validate data
       const { error } = registerValidate({ email: newUser.email, password: newUser.password, name: newUser.name });
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       //   check email has been exists
       const isExistEmail = await User.findOne({
