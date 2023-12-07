@@ -11,7 +11,7 @@ export default {
       const data = await TypeSpend.find({ userId });
       return Promise.resolve(data);
     } catch (err) {
-      throw err;
+      throw createError.BadRequest(err);
     }
   },
 
