@@ -498,7 +498,7 @@ export default {
       };
       const { error } = spendValidate(dataValidate);
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       //  after pass validate
       const { image } = newSpend;
