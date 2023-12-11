@@ -75,38 +75,13 @@ export default {
   deleteTypeSpendById: async (id) => {
     try {
       // delete all spend reference to this type spend
-      let deleteSpendRef = () => {
-        return new Promise(async (resolve) => {
-          const data = await Spend.deleteMany({ typeId: id });
-          return resolve(data);
-        });
-      };
+      const spendDeleted = await Spend.deleteMany({ typeId: id });
+      // delete type spend
+      let deleteTypeSpend = await TypeSpend.findByIdAndDelete({ _id: id });
 
-      let deleteTypeSpend = () => {
-        return new Promise(async (resolve) => {
-          const data = await TypeSpend.deleteOne({ _id: id });
-          return resolve(data);
-        });
-      };
-      //todo: delete image in cloud
-      (async () => {
-        const data = await TypeSpend.findOne({ _id: id }, { image: 1 });
-        if (data?.image) {
-          const fileName = getFileNameFromURL(data.image);
-          if (fileName !== 'default-image_bsoxjb') {
-            try {
-              removeImg(data.image);
-            } catch (err) {
-              return;
-            }
-          }
-        }
-      })();
-
-      const data = await Promise.all([deleteSpendRef(), deleteTypeSpend()]);
-      return Promise.resolve({ spendDeleted: data[0].deletedCount, typeSpendDeleted: data[1].deletedCount });
+      return Promise.resolve({ spendDeleted, typeSpendDeleted: deleteTypeSpend });
     } catch (err) {
-      throw err;
+      throw createError.NotFound(err);
     }
   },
 };
