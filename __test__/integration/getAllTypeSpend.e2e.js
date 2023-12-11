@@ -4,7 +4,7 @@ import DbTest from '../common/DbTest.js';
 import request from 'supertest';
 import app from '../../serverTesting.js';
 
-describe('[POST] /api/type-spends/create', () => {
+describe('[POST] /api/all-of-user/:userId', () => {
   //todo: CONST DATA TO TEST:
   const USER_EXISTS = { _id: '6571e073eb71f63b4b4ae6f6', password: '123456', name: 'Teen' };
   const TYPE_SPEND_EXISTS = [

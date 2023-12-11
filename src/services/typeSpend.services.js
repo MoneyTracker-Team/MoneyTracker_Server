@@ -20,7 +20,7 @@ export default {
       // validate data
       const { error } = typeSpendValidate({ userId: newType.userId, name: newType.name, isDaily: newType.isDaily });
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       const { image } = newType;
       if (image) {
