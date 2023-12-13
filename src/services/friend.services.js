@@ -3,6 +3,7 @@ import Loan from '../model/loan.model.js';
 import Spend from '../model/spend.model.js';
 import { storeImg, removeImg } from '../helpers/cloudinary.js';
 import getFileNameFromURL from '../helpers/getFileName.js';
+import createHttpError from 'http-errors';
 
 export default {
   getAllFriendOfUser: async (userId) => {
@@ -31,7 +32,7 @@ export default {
       const data = await Friend.create(newFriend);
       return Promise.resolve(data);
     } catch (err) {
-      throw err;
+      throw createHttpError.BadRequest(err);
     }
   },
 
