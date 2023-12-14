@@ -12,6 +12,7 @@ describe('[POST] /api/auth/login', () => {
   const PASSWORD_LESS_THAN_5 = { email: '', password: '1234' };
   const PASSWORD_NOT_MATCH = { email: 'test@gmail.com', password: '123456789' };
   const EMAIL_NOT_EXISTS = { email: 'test123@gmail.com', password: '12345678' };
+  const DATA_TC_4 = { email: '', password: '' };
 
   //todo: Method create data test:
   const createTestData = async () => {
@@ -36,43 +37,50 @@ describe('[POST] /api/auth/login', () => {
     await DbTest.disconnect();
   });
 
-  //! TEST CASE 1:
-  it('Should return status 200 for valid credentials', async () => {
+  //! TEST CASE 1: <SIGNIN_TC_1>
+  it('<SIGNIN_TC_1> Successful login', async () => {
     const response = await request(app).post('/api/auth/login').send(USER_VALID);
     //* Expected result:
     expect(response.status).toBe(200);
   });
 
-  //! TEST CASE 2:
-  it('Email is required', async () => {
+  //! TEST CASE 2: <SIGNIN_TC_2>
+  it('<SIGNIN_TC_2> Login with non-existent email', async () => {
     const response = await request(app).post('/api/auth/login').send(LOGIN_NOT_EMAIL);
     //* Expected result:
     expect(response.status).toBe(400);
   });
 
-  //! TEST CASE 3:
-  it('Password is required', async () => {
+  //! TEST CASE 3: <SIGNIN_TC_3>
+  it('<SIGNIN_TC_3> Login with incorrect password', async () => {
     const response = await request(app).post('/api/auth/login').send(LOGIN_NOT_PASSWORD);
     //* Expected result:
     expect(response.status).toBe(400);
   });
 
-  //! TEST CASE 4:
-  it('Password is not match', async () => {
+  //! TEST CASE 4: <SIGNIN_TC_4>
+  it('<SIGNIN_TC_4>  Login with empty email and password', async () => {
+    const response = await request(app).post('/api/auth/login').send(DATA_TC_4);
+    //* Expected result:
+    expect(response.status).toBe(400);
+  });
+
+  //! TEST CASE 5: <SIGNIN_TC_5>
+  it('<SIGNIN_TC_5> Password is not match', async () => {
     const response = await request(app).post('/api/auth/login').send(PASSWORD_NOT_MATCH);
     //* Expected result:
     expect(response.status).toBe(401);
   });
 
-  //! TEST CASE 5:
-  it('Email is not exists', async () => {
+  //! TEST CASE 6: <SIGNIN_TC_6>
+  it('<SIGNIN_TC_6> Email is not exists', async () => {
     const response = await request(app).post('/api/auth/login').send(EMAIL_NOT_EXISTS);
     //* Expected result:
     expect(response.status).toBe(401);
   });
 
-  //! TEST CASE 6:
-  it('Password min 5 chars', async () => {
+  //! TEST CASE 7: <SIGNIN_TC_7>
+  it('<SIGNIN_TC_7> Password min 5 chars', async () => {
     const response = await request(app).post('/api/auth/login').send(PASSWORD_LESS_THAN_5);
     //* Expected result:
     expect(response.status).toBe(400);
