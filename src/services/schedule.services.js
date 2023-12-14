@@ -33,7 +33,7 @@ export default {
       //* validate data
       const { error } = scheduleValidate(newSchedule);
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       //* after pass validate
       const data = await SpendSchedule.create(newSchedule);
