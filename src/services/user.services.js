@@ -73,7 +73,7 @@ export default {
       // validate Password
       const { error } = changePasswordValidate({ oldPassword, newPassword });
       if (error) {
-        throw createError(error.details[0].message);
+        throw createError.BadRequest(error.details[0].message);
       }
       const userData = await User.findOne({ _id: id });
       if (!(userData.password === oldPassword)) {
