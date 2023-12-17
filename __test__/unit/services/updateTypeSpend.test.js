@@ -2,7 +2,7 @@ import TypeSpend from '../../../src/model/typeSpend.model.js';
 import DbTest from '../../common/DbTest.js';
 import TypeSpendService from '../../../src/services/typeSpend.services.js';
 
-describe('[FUNCTION] create Schedule', () => {
+describe('[FUNCTION] update Type Spend', () => {
   //todo: CONST DATA TO TEST:
   const DATA_EXISTS = { _id: '656f2645a61aa0c2700a9148', name: 'Ăn sáng' };
   const BAD_REQUEST_ERROR = 'BadRequestError';
@@ -57,7 +57,7 @@ describe('[FUNCTION] create Schedule', () => {
   });
 
   //! TEST CASE 4: <UTCID04>
-  it('<UTCID04> update TypeSpend success', async () => {
+  it('<UTCID04> update TypeSpend with empty type name', async () => {
     let exception = null;
     try {
       await TypeSpendService.updateTypeSpend(DATA_EXISTS._id, {
